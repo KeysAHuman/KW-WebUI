@@ -12,6 +12,8 @@ This is a project I've slowly been refining and expanding as my needs grow (and 
 
 
 - - -
+Skip into installation:
+[Installation/Setup](https://github.com/KeysAHuman/KW-WebUI/edit/main/README.md#-getting-started)
 
 
 ## Feature overview:
