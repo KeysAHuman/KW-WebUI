@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama AI Workbench</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}?v=3.0.2">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Markdown & Highlight.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link id="hljs-theme-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link id="hljs-theme-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" disabled>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- CodeMirror for Canvas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/theme/material-darker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
+    <!-- Common CodeMirror modes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/shell/shell.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/rust/rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/go/go.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="mac-buttons">
+                    <span class="dot close"></span>
+                    <span id="theme-toggle-btn" class="dot minimize" title="Toggle Light/Dark"></span>
+                    <span class="dot maximize"></span>
+                </div>
+                <h3>AI Workbench</h3>
+                <button id="new-chat-btn" class="icon-btn" title="New Chat">+</button>
+            </div>
+            <div id="conversation-list" class="conversation-list">
+                <!-- Conversations will be loaded here -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="footer-controls">
+                    <select id="model-select">
+                        <option value="" disabled selected>Select Model</option>
+                    </select>
+                    <div class="toggle-row">
+                        <div class="toggle-group">
+                            <label class="switch">
+                                <input type="checkbox" id="tts-toggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span>TTS</span>
+                        </div>
+                        <div class="toggle-group">
+                            <label class="switch">
+                                <input type="checkbox" id="tools-toggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span>Tools</span>
+                        </div>
+                        <div class="toggle-group">
+                            <label class="switch">
+                                <input type="checkbox" id="canvas-toggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span>Canvas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <span id="current-title">New Conversation</span>
+                <div class="header-right">
+                    <span id="status-indicator" class="status-indicator"></span>
+                </div>
+            </header>
+            <div id="chat-messages" class="chat-messages">
+                <div class="terminal-start">OLLAMA WORKBENCH v3.0.2</div>
+                <div class="terminal-info">Ready to assist.</div>
+                <div class="terminal-ready">Thinking Tokens, Tools, Canvas & TTS Ready.</div>
+            </div>
+            <footer class="chat-footer">
+                <div id="emoji-panel" class="emoji-panel hidden">
+                    <div class="emoji-tabs">
+                        <button class="emoji-tab active" data-group="smileys">😀</button>
+                        <button class="emoji-tab" data-group="symbols">∑</button>
+                        <button class="emoji-tab" data-group="accented">á</button>
+                    </div>
+                    <div id="emoji-list" class="emoji-list"></div>
+                </div>
+                <div id="preview-area" class="preview-area hidden"></div>
+                <div class="input-container">
+                    <span class="prompt-prefix">~ $</span>
+                    <textarea id="chat-input" placeholder="Ask anything... (Shift+Enter for newline)"
+                        rows="1"></textarea>
+
+                    <input type="file" id="file-input" hidden multiple>
+                    <button id="upload-btn" class="icon-btn" title="Upload File/Image">📎</button>
+                    <button id="voice-btn" class="icon-btn" title="Voice Input">🎤</button>
+                    <button id="emoji-btn" class="icon-btn">😊</button>
+                    <button id="stop-btn" class="icon-btn hidden" title="Stop Generation">⏹</button>
+                    <button id="send-btn" class="send-btn">_</button>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Canvas Panel -->
+        <aside id="canvas-panel" class="canvas-panel">
+            <div class="canvas-header">
+                <div class="canvas-title-area">
+                    <span class="canvas-icon">📝</span>
+                    <span id="canvas-title">Canvas</span>
+                    <span id="canvas-lang" class="canvas-lang-badge"></span>
+                </div>
+                <div class="canvas-actions">
+                    <button id="canvas-copy-btn" class="icon-btn" title="Copy to Clipboard">📋</button>
+                    <button id="canvas-download-btn" class="icon-btn" title="Download File">💾</button>
+                    <button id="canvas-close-btn" class="icon-btn" title="Close Canvas">✕</button>
+                </div>
+            </div>
+            <div id="canvas-editor-wrapper" class="canvas-editor-wrapper">
+                <textarea id="canvas-editor"></textarea>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const USERNAME = "{{ username }}";
+    </script>
+    <script src="{{ url_for('static', path='js/script.js') }}?v=3.0.2"></script>
+</body>
+
+</html>

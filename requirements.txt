@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+jinja2
+httpx
+python-multipart
+mcp
+PyPDF2
+duckduckgo_search
+pytz
+Pillow
+# Optional: TTS support (requires torch — set TORCH_PATH env var if installed externally)
+# torch
+# coqui-tts
