@@ -66,7 +66,7 @@ First, ensure you have Ollama and all of the dependencies of this WebUI.
 
 - Open the cloned/downloaded directory, and open terminal in that location (or navigate to the directory in terminal).
 	* (Optional but recommended) Create a virtual environment now to save some headache:                                
-  `pip -m venv .venv` (or `python3 -m venv .venv`) then activate it --
+  `python3 -m venv .venv` then activate it --
   Linux/Mac: `source .venv/bin/activate`                                                                         
   Windows: `.venv\Scripts\activate`                                                                                 
 
