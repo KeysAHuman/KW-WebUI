@@ -65,12 +65,16 @@ Uses a clean, split-view layout with a 'glass-morphism' sidebar and familiar mac
 First, ensure you have Ollama and all of the dependencies of this WebUI.
 
 - Open the cloned/downloaded directory, and open terminal in that location (or navigate to the directory in terminal).
+	* (Optional but recommended) Create a virtual environment now to save some headache:                                
+  `pip -m venv .venv` (or `python3 -m venv .venv`) then activate it --
+  Linux/Mac: `source .venv/bin/activate`                                                                         
+  Windows: `.venv\Scripts\activate`                                                                                 
 
 - Then, input or type; `pip install -r requirements.txt` (if this does not work for some Windows users, you can also run `Python3 install -r requirements.txt` in its place.)
 	  
-    Core Requirements: `fastapi` `uvicorn` `jinja2` `httpx` `python-multipart` `mcp` `pypdf2` `duckduckgo_search` `pytz` `pillow`
-	  Optional (TTS): `torch` + `Coqui-TTS`                                                                                          
-    (^ These are handled through `requirements.txt`, I've just listed them here "on-hand" so tech-savvy individuals dont have to dig)
+     * Core Requirements: `fastapi` `uvicorn` `jinja2` `httpx` `python-multipart` `mcp` `pypdf2` `duckduckgo_search` `pytz` `pillow`
+	   Optional (TTS): `torch` + `Coqui-TTS`                                                                                          
+       (^ These are handled through `requirements.txt`, I've just listed them here "on-hand" so tech-savvy individuals dont have to dig)
     
 
 - Start Ollama (if not already running): `Ollama serve`
