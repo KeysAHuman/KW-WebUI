@@ -884,7 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messages = [];
         generatedTitle = null;
         chatMessages.innerHTML = `
-            <div class="terminal-start">OLLAMA WORKBENCH v3.0.2</div>
+            <div class="terminal-start">OLLAMA WORKBENCH v3.0.3</div>
             <div class="terminal-info">New session started.</div>
             <div class="terminal-ready">${getFeaturesReadyMessage()}</div>
         `;
