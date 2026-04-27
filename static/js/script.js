@@ -46,6 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
         breaks: true
     });
 
+    function renderMarkdownToHtml(markdownText) {
+        const raw = marked.parse(markdownText || '');
+        if (window.DOMPurify) {
+            return window.DOMPurify.sanitize(raw);
+        }
+        return raw;
+    }
+
     // Theme handling (system default with manual override)
     const THEME_STORAGE_KEY = 'theme'; // 'light' | 'dark'
 
@@ -340,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contentDiv.className = 'content';
 
         if (type === 'model') {
-            contentDiv.innerHTML = marked.parse(content);
+            contentDiv.innerHTML = renderMarkdownToHtml(content);
         } else {
             contentDiv.textContent = content;
         }
@@ -471,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
         prefix.textContent = 'MODEL';
         const messageContentElement = document.createElement('div');
         messageContentElement.className = 'content';
-        messageContentElement.innerHTML = marked.parse('*Thinking, this may take a moment...*');
+        messageContentElement.innerHTML = renderMarkdownToHtml('*Thinking, this may take a moment...*');
         msgDiv.appendChild(prefix);
         msgDiv.appendChild(messageContentElement);
         chatMessages.appendChild(msgDiv);
@@ -538,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         if (data.type === 'tool_status' && data.message && data.message.content) {
                             modelResponse += data.message.content;
-                            messageContentElement.innerHTML = marked.parse(modelResponse);
+                            messageContentElement.innerHTML = renderMarkdownToHtml(modelResponse);
                             chatMessages.scrollTop = chatMessages.scrollHeight;
                             continue;
                         }
@@ -577,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     const beforeTag = fullText.substring(0, fullText.indexOf('<canvas_mode'));
                                     const afterTag = fullText.substring(tagEnd);
                                     modelResponse = beforeTag;
-                                    messageContentElement.innerHTML = marked.parse(modelResponse);
+                                    messageContentElement.innerHTML = renderMarkdownToHtml(modelResponse);
                                     canvasBuffer = afterTag;
                                     if (canvasEditor) {
                                         canvasEditor.setValue(canvasBuffer);
@@ -602,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                     // Add a note in the chat and resume modelResponse with anything after the tag
                                     modelResponse += '\n\n*📝 Code written to Canvas →*\n' + afterTag;
-                                    messageContentElement.innerHTML = marked.parse(modelResponse);
+                                    messageContentElement.innerHTML = renderMarkdownToHtml(modelResponse);
                                 } else {
                                     // Prevent partial closing tag (e.g. "</can") from leaking into canvas during stream
                                     let previewBuffer = canvasBuffer;
@@ -620,7 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             // Normal content — append to chat bubble
                             modelResponse += contentChunk;
-                            messageContentElement.innerHTML = marked.parse(modelResponse);
+                            messageContentElement.innerHTML = renderMarkdownToHtml(modelResponse);
                             chatMessages.scrollTop = chatMessages.scrollHeight;
 
                             // Re-apply code highlighting for partial updates
@@ -649,7 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             : null;
                     if (contentChunk) {
                         modelResponse += contentChunk;
-                        messageContentElement.innerHTML = marked.parse(modelResponse);
+                        messageContentElement.innerHTML = renderMarkdownToHtml(modelResponse);
                     }
                 } catch (e) { /* ignore partial trailing data */ }
             }
@@ -884,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messages = [];
         generatedTitle = null;
         chatMessages.innerHTML = `
-            <div class="terminal-start">OLLAMA WORKBENCH v3.0.3</div>
+            <div class="terminal-start">OLLAMA WORKBENCH v3.0.2</div>
             <div class="terminal-info">New session started.</div>
             <div class="terminal-ready">${getFeaturesReadyMessage()}</div>
         `;
